@@ -58,9 +58,9 @@ public class NewIoClient {
     private static void handleRead(SelectionKey key) throws IOException {
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-        int i = socketChannel.read(byteBuffer);
-        if (i > 0) {
-            System.out.println("收到服务端消息："+new String(byteBuffer.array()));
+        int size = socketChannel.read(byteBuffer);
+        if (size > 0) {
+            System.out.println("收到服务端消息："+new String(byteBuffer.array(),0,size));
         }
     }
 }

@@ -27,8 +27,8 @@ public class NewIoServer {
                 if (null != socketChannel) {
                     ByteBuffer buffer = ByteBuffer.allocate(1024);
                     // 读取客户端数据
-                    socketChannel.read(buffer); // 读取到缓冲区
-                    System.out.println("收到了客户端数据："+new String(buffer.array()));
+                    int size = socketChannel.read(buffer);// 读取到缓冲区
+                    System.out.println("收到了客户端数据："+new String(buffer.array(),0,size));
                     // 向客户端返回数据
                     buffer.flip();
                     // buffer.put("this is nio server response".getBytes());

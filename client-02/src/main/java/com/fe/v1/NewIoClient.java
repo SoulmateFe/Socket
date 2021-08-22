@@ -25,9 +25,9 @@ public class NewIoClient {
 
             // 从服务端读取返回数据
             buffer.clear();
-            int i = socketChannel.read(buffer);
-            if (i > 0) {
-                System.out.println("收到了服务端的数据："+ new String(buffer.array()));
+            int size = socketChannel.read(buffer);
+            if (size > 0) {
+                System.out.println("收到了服务端的数据："+ new String(buffer.array(),0,size));
             } else {
                 System.out.println("没有收到数据");
             }

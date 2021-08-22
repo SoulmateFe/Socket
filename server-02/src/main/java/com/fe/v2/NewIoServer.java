@@ -58,8 +58,8 @@ public class NewIoServer {
         // 上面注册的是socketChannel，所以这里是socketChannel
         SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-        socketChannel.read(byteBuffer); // 这里一定有数据
-        System.out.println("收到客户端消息："+new String(byteBuffer.array()));
+        int size = socketChannel.read(byteBuffer);// 这里一定有数据
+        System.out.println("收到客户端消息："+new String(byteBuffer.array(),0,size));
     }
 
 

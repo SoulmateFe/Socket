@@ -1,14 +1,15 @@
-package com.fe;
+package com.fe.v1;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Description SocketClientDemo
  * @Author sosuke :-)
  * @Date 2021/8/22 09:13
  */
-public class SocketClientDemo2 {
+public class SocketClientDemo {
     public static void main(String[] args) {
 
         try (
@@ -20,8 +21,9 @@ public class SocketClientDemo2 {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         ) {
             System.out.println("客户端请求连接，端口："+socket.getLocalPort());
+            TimeUnit.SECONDS.sleep(30); // 模拟io阻塞时间
             // \n 表示流结束
-            bufferedWriter.write("hello, this is client socket-02\n");
+            bufferedWriter.write("hello, this is client socket-01\n");
             bufferedWriter.flush();
 
             String line = bufferedReader.readLine();

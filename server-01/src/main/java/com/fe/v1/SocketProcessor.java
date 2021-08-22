@@ -1,4 +1,4 @@
-package com.fe;
+package com.fe.v1;
 
 import java.io.*;
 import java.net.ServerSocket;

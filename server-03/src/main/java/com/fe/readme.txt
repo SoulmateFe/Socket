@@ -1,0 +1,2 @@
+可以使用BIO编写server
+也可以使用netty编写server

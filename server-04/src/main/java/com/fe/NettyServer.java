@@ -45,6 +45,7 @@ public class NettyServer {
                             ServerFrame.INSTANCE.updateServerMsg("channel initialized! ch = " + ch);
                             // System.out.println("childHandler->ServerInitializer->initChannel-->"+Thread.currentThread().getName() +"==="+ Thread.currentThread().getId());
                             ChannelPipeline pipeline = ch.pipeline();
+                            // 编码解码要放在ServerChildHandler之前
                             pipeline.addLast(new TankMsgEncoder())
                                     .addLast(new TankMsgDecoder())
                                     .addLast(new ServerChildHandler());

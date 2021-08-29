@@ -28,6 +28,7 @@ public class NettyClient {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
+                            // 编码解码要放在ClientHandler之前
                             pipeline.addLast(new TankMsgEncoder())
                                     .addLast(new TankMsgDecoder())
                                     .addLast(new ClientHandler());

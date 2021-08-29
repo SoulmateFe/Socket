@@ -20,6 +20,7 @@ public class ClientFrame extends Frame {
     public static final ClientFrame INSTANCE = new ClientFrame();
     TextArea textArea = new TextArea();
     Button btnSend = new Button("send");
+    Button btnClear = new Button("clear");
     Random random = new Random();
     NettyClient nettyClient;
 
@@ -27,8 +28,11 @@ public class ClientFrame extends Frame {
         this.setSize(600, 400);
         this.setLocation(100, 20);
         this.add(textArea, BorderLayout.CENTER);
-        this.add(btnSend, BorderLayout.NORTH);
-        textArea.setFont(new Font("verderna",Font.PLAIN, 18));
+        Panel p = new Panel(new GridLayout(1, 2));
+        p.add(btnSend);
+        p.add(btnClear);
+        this.add(p, BorderLayout.NORTH);
+        this.setFont(new Font("verderna",Font.PLAIN, 18));
         textArea.setEditable(false);
         this.btnSend.addActionListener(new ActionListener() {
             @Override
@@ -36,6 +40,12 @@ public class ClientFrame extends Frame {
                 TankMsg tankMsg = new TankMsg(random.nextInt(10), random.nextInt(20));
                 updateText("send content : "+tankMsg.toString());
                 nettyClient.send(tankMsg);
+            }
+        });
+        this.btnClear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textArea.setText("");
             }
         });
         this.addWindowListener(new WindowAdapter() {

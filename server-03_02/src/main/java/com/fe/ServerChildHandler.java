@@ -1,5 +1,6 @@
 package com.fe;
 
+import com.fe.frame.ServerFrame;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -49,6 +50,7 @@ public class ServerChildHandler extends ChannelInboundHandlerAdapter {
             SocketAddress clientAddress = ctx.channel().remoteAddress();
             if ("_bye_".equals(acceptMsg)) {
                 response = clientAddress + " 客户端要求退出";
+                ServerFrame.INSTANCE.updateServerMsg(response);
                 ByteBuf buffer = Unpooled.copiedBuffer(response.getBytes(StandardCharsets.UTF_8));
                 NettyServer.clients.writeAndFlush(buffer);
                 NettyServer.clients.remove(ctx.channel());
@@ -57,6 +59,9 @@ public class ServerChildHandler extends ChannelInboundHandlerAdapter {
                 // 写回给通道组中的所有客户端
                 if (!acceptMsg.endsWith("已上线")) {
                     response = clientAddress.toString() +": "+ acceptMsg;
+                    ServerFrame.INSTANCE.updateClientMsg(response);
+                } else {
+                    ServerFrame.INSTANCE.updateServerMsg(response);
                 }
                 ByteBuf buffer = Unpooled.copiedBuffer(response.getBytes(StandardCharsets.UTF_8));
                 NettyServer.clients.writeAndFlush(buffer); // 客户端read接收时强转成ByteBuf，所以这里要传ByteBuf

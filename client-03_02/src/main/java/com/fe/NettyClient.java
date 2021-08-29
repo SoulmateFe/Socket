@@ -34,7 +34,13 @@ public class NettyClient {
                     // 指定channel，可以是阻塞的，也可以是非阻塞的
                     .channel(NioSocketChannel.class)
                     // channel发生事件时的处理方法
-                    .handler(new ClientChannelInitializer());
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            // System.out.println("channel initialized! ch = "+ch);
+                            ch.pipeline().addLast(new ClientHandler());
+                        }
+                    });
 
             System.out.println("start to connect...");
             // 这里是异步的

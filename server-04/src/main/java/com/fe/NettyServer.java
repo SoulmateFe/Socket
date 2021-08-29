@@ -1,6 +1,7 @@
 package com.fe;
 
 import com.fe.codec.TankMsgDecoder;
+import com.fe.codec.TankMsgEncoder;
 import com.fe.frame.ServerFrame;
 import com.fe.handler.ServerChildHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -44,7 +45,8 @@ public class NettyServer {
                             ServerFrame.INSTANCE.updateServerMsg("channel initialized! ch = " + ch);
                             // System.out.println("childHandler->ServerInitializer->initChannel-->"+Thread.currentThread().getName() +"==="+ Thread.currentThread().getId());
                             ChannelPipeline pipeline = ch.pipeline();
-                            pipeline.addLast(new TankMsgDecoder())
+                            pipeline.addLast(new TankMsgEncoder())
+                                    .addLast(new TankMsgDecoder())
                                     .addLast(new ServerChildHandler());
                         }
                     })

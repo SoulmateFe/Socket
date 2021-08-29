@@ -1,12 +1,11 @@
 package com.fe;
 
+import com.fe.codec.TankMsgDecoder;
 import com.fe.codec.TankMsgEncoder;
+import com.fe.entity.TankMsg;
 import com.fe.handler.ClientHandler;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -18,7 +17,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  * @Date 2021/8/29 19:25
  */
 public class NettyClient {
-
+    private Channel channel;
     public void connect(String host, int port) {
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
@@ -30,11 +29,20 @@ public class NettyClient {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new TankMsgEncoder())
+                                    .addLast(new TankMsgDecoder())
                                     .addLast(new ClientHandler());
                         }
                     })
                     .connect(host, port)
                     .sync();
+            future.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    if (future.isSuccess()) {
+                        channel = future.channel();
+                    }
+                }
+            });
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -42,4 +50,9 @@ public class NettyClient {
             group.shutdownGracefully();
         }
     }
+
+    public void send(TankMsg tankMsg) {
+        channel.writeAndFlush(tankMsg);
+    }
+
 }

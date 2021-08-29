@@ -16,10 +16,25 @@ import io.netty.util.ReferenceCountUtil;
 public class ClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush(new TankMsg(3,10));
+        ClientFrame.INSTANCE.updateText("channel active");
     }
 
     @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        try {
+            ClientFrame.INSTANCE.updateText("channel read");
+            // 从服务端读取(直接解码为TankMsg)
+            TankMsg tankMsg = (TankMsg) msg;
+            String acceptMsg = tankMsg.toString();
+
+            // 将服务端返回的信息显示在面板上
+            ClientFrame.INSTANCE.updateText(acceptMsg);
+        } finally { // 释放byteBuf
+            ReferenceCountUtil.release(msg);
+        }
+    }
+
+    /*@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf byteBuf = null;
         try {
@@ -36,6 +51,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
                 ReferenceCountUtil.release(byteBuf);
             }
         }
-    }
+    }*/
 
 }

@@ -24,6 +24,7 @@ public class ServerChildHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         // System.out.println("pipeline.addLast->ServerChildHandler->channelActive-->"+Thread.currentThread().getName() +"==="+ Thread.currentThread().getId());
+        ServerFrame.INSTANCE.updateServerMsg("channel active");
         // 客户端连接上后将channel添加到group
         NettyServer.clients.add(ctx.channel());
     }
@@ -40,11 +41,15 @@ public class ServerChildHandler extends ChannelInboundHandlerAdapter {
             ServerFrame.INSTANCE.updateServerMsg("channel read");
             TankMsg tankMsg = (TankMsg) msg;
             String req = tankMsg.toString();
-            ServerFrame.INSTANCE.updateClientMsg(req);
+            SocketAddress remoteAddress = ctx.channel().remoteAddress();
+            ServerFrame.INSTANCE.updateClientMsg(remoteAddress.toString() +": "+ req);
 
             // 写回给客户端
-            ByteBuf buffer = Unpooled.copiedBuffer(req.getBytes(StandardCharsets.UTF_8));
-            NettyServer.clients.writeAndFlush(buffer); // 客户端read接收时强转成ByteBuf，所以这里要传ByteBuf
+            // ByteBuf buffer = Unpooled.copiedBuffer(req.getBytes(StandardCharsets.UTF_8));
+            // NettyServer.clients.writeAndFlush(buffer); // 客户端read接收时强转成ByteBuf，所以这里要传ByteBuf
+
+            // 写回给客户端，使用编码器处理TankMsg
+            NettyServer.clients.writeAndFlush(tankMsg);
 
         } finally { // 释放refCount
             ReferenceCountUtil.release(msg);

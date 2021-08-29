@@ -16,31 +16,18 @@ import java.awt.event.WindowEvent;
 public class ClientFrame extends Frame {
     public static final ClientFrame INSTANCE = new ClientFrame();
     TextArea textArea = new TextArea();
-    TextField textField = new TextField();
     NettyClient nettyClient;
 
     public ClientFrame() {
         this.setSize(600, 400);
         this.setLocation(100, 20);
         this.add(textArea, BorderLayout.CENTER);
-        this.add(textField, BorderLayout.SOUTH);
-        textArea.setEditable(false);
         textArea.setFont(new Font("verderna",Font.PLAIN, 18));
+        textArea.setEditable(false);
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // 通知服务端要退出
-                nettyClient.closeConnect();
                 System.exit(0);
-            }
-        });
-        textField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // 发送给服务器
-                nettyClient.send(textField.getText());
-                // 清空文本框
-                textField.setText("");
             }
         });
     }
@@ -57,7 +44,7 @@ public class ClientFrame extends Frame {
      */
     private void connetToServer() {
         nettyClient = new NettyClient();
-        nettyClient.connect();
+        nettyClient.connect("localhost", 8088);
     }
 
     /**

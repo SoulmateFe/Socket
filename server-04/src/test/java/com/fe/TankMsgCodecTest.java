@@ -17,6 +17,9 @@ import org.junit.Test;
  */
 public class TankMsgCodecTest {
 
+    /**
+     * Outbound 从左往右
+     */
     @Test
     public void testEncoder() {
         TankMsg tankMsg = new TankMsg(4, 9);
@@ -32,6 +35,9 @@ public class TankMsgCodecTest {
         buf.release();
     }
 
+    /**
+     * Inbound 从右往左
+     */
     @Test
     public void testEncoder2() {
         ByteBuf buffer = Unpooled.buffer();

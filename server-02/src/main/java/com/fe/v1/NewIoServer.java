@@ -19,7 +19,7 @@ public class NewIoServer {
         try (
                 ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         ) {
-            serverSocketChannel.configureBlocking(false); // 设置非阻塞
+            serverSocketChannel.configureBlocking(false); // 设置连接非阻塞
             serverSocketChannel.socket().bind(new InetSocketAddress(8088));
             while (true) {
                 // 监听客户端请求，非阻塞的
@@ -30,8 +30,7 @@ public class NewIoServer {
                     int size = socketChannel.read(buffer);// 读取到缓冲区
                     System.out.println("收到了客户端数据："+new String(buffer.array(),0,size));
                     // 向客户端返回数据
-                    buffer.flip();
-                    // buffer.put("this is nio server response".getBytes());
+                    buffer = ByteBuffer.wrap("HelloClient\n".getBytes());
                     socketChannel.write(buffer);
                 } else {
                     TimeUnit.SECONDS.sleep(1);
